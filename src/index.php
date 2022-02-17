@@ -37,9 +37,20 @@ if (isset($_GET['action'])){
     if ($_GET['action'] == 'format'){
         $migr->migrateFormat();
     }
+    if ($_GET['action'] == 'cc'){
+        $migr->migrateCC();
+    }
 }
 
-echo "<form><input type='hidden' name='action' value='format'/><input type='submit' value='Migrer format vers v2'/></form>";
+echo "<div class=\"alert alert-info alert-block fade in \">
+La migration du format va migré les niveaux de section vers v2 sans forcer le format.
+</div>";
+echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='btn btn-primary' value='Migrer format vers v2'/></form><hr>";
+
+echo "<div class=\"alert alert-info alert-block fade in \">
+La migration du cahier de trace va migré le cahier ainsi que les données vers une nouvelle activité et va cacher l'ancienne activité.
+</div>";
+echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='btn btn-primary' value='Migrer cahier trace vers v2'/></form>";
 
 echo $OUTPUT->box_end();
 echo $OUTPUT->footer();
