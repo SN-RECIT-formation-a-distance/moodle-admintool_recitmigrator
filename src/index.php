@@ -32,25 +32,38 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'tool_recitmigrator'));
 echo $OUTPUT->box_start();
 
+$resultFormat = "";
+$resultCC = "";
 if (isset($_GET['action'])){
     $migr = new RecitMigrator();
     if ($_GET['action'] == 'format'){
-        $migr->migrateFormat();
+        $resultFormat = $migr->migrateFormat();
     }
     if ($_GET['action'] == 'cc'){
-        $migr->migrateCC();
+        $resultCC = $migr->migrateCC();
     }
 }
 
-echo "<div class=\"alert alert-info alert-block fade in \">
+echo "<h3>Migration Tree Topics pour Format RÉCIT</h3>";
+echo "<div class=\"text-muted \">
 La migration du format va migré les niveaux de section vers v2 sans forcer le format.
 </div>";
-echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='btn btn-primary' value='Migrer format vers v2'/></form><hr>";
+echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
+if(!empty($resultFormat)){
+    echo "<h4>Résultat</h4>";
+    echo $resultFormat;
+}
 
-echo "<div class=\"alert alert-info alert-block fade in \">
+echo "<h3>Migration Cahier de traces v1 au Cahier de traces v2</h3>";
+echo "<div class=\"text-muted \">
 La migration du cahier de trace va migré le cahier ainsi que les données vers une nouvelle activité et va cacher l'ancienne activité.
 </div>";
-echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='btn btn-primary' value='Migrer cahier trace vers v2'/></form>";
+echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
+if(!empty($resultCC)){
+    echo "<h4>Résultat</h4>";
+    echo $resultCC;
+}
+
 
 echo $OUTPUT->box_end();
 echo $OUTPUT->footer();

@@ -24,13 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020061500; // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900; // Requires this Moodle version
+$plugin->version   = 2022020900; // The current plugin version (Date: YYYYMMDDXX)
+$plugin->requires  = 2020061500.00; // Moodle 3.9.0
 $plugin->component = 'tool_recitmigrator'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v2.0.0';
-$plugin->dependencies = [
-    'theme_recit2' => 2022020900,
-	'mod_recitcahiertraces' => 2022020900
-];
+$plugin->release = 'v1.0.0';
+$plugin->dependencies = [];
 

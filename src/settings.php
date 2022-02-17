@@ -26,5 +26,5 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('development', new admin_externalpage('toolrecitmigrator', get_string('pluginname', 'tool_recitmigrator'), "$CFG->wwwroot/$CFG->admin/tool/recitmigrator/index.php"));
+    $ADMIN->add('root', new admin_externalpage('toolrecitmigrator', get_string('pluginname', 'tool_recitmigrator'), "$CFG->wwwroot/$CFG->admin/tool/recitmigrator/index.php"));
 }

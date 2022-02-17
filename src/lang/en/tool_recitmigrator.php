@@ -22,5 +22,5 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'RECIT Migrate';
+$string['pluginname'] = 'RÉCIT Migrate';
 $string['privacy:metadata'] = 'This plugin does not store any personal data.';
