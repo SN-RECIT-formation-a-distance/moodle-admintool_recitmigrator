@@ -13,7 +13,7 @@ class RecitMigrator {
         if (!empty($recitopts)){
             foreach($recitopts as $data){
                 $DB->execute("insert into {format_recit_options} (courseid, sectionid, name, value)
-                values(?, ?, 'sectionlevel' ?)
+                values(?, ?, 'sectionlevel', ?)
                 ON DUPLICATE KEY UPDATE value = value", [$data->courseid, $data->sectionid, $data->value]);
                 $num++;
             }
