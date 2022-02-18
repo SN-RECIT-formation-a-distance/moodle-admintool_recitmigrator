@@ -46,7 +46,8 @@ if (isset($_GET['action'])){
 
 echo "<h3>Migration Tree Topics pour Format RÉCIT</h3>";
 echo "<div class=\"text-muted \">
-La migration du format va migré les niveaux de section vers v2 sans forcer le format.
+La migration du format va migré les données Treetopics (modèle menu, niveau de menu, affichage par section, cacher section restreint) vers format RÉCIT et changera aussi le format de cours.
+Le format RÉCIT est dépendant du theme RÉCIT v2.
 </div>";
 echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
 if(!empty($resultFormat)){
