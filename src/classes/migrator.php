@@ -39,6 +39,10 @@ class RecitMigrator {
                 $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
             }elseif ($data->name == 'ttcustompath'){
                 $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
+            }elseif ($data->name == 'tthascontract'){
+                unset($data->id);
+                $data->format = 'recit';
+                $DB->insert_record('course_format_options', $data);
             }
             $num++;
         }
@@ -79,9 +83,10 @@ class RecitMigrator {
 
     public function setCustomFieldData($courseid, $name, $val){
         $handler = core_course\customfield\course_handler::create();
+        $k = 'customfield_'.$name;
         $data = new stdClass();
         $data->id = $courseid;
-        $data->$name = $val;
+        $data->$k = $val;
         $handler->instance_form_save($data);
     }
     
