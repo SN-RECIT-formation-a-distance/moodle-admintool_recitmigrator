@@ -10,80 +10,81 @@ class RecitMigrator {
         $result = "";
         
         try {
-        $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics', 'name' => 'ttsectiondisplay'));
-        $num = 0;
-        if (!empty($recitopts)){
+            $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics', 'name' => 'ttsectiondisplay'));
+            $num = 0;
+            if (!empty($recitopts)){
+                foreach($recitopts as $data){
+                    $DB->execute("insert into {format_recit_options} (courseid, sectionid, name, value)
+                    values(?, ?, 'sectionlevel', ?)
+                    ON DUPLICATE KEY UPDATE value = value", [$data->courseid, $data->sectionid, $data->value]);
+                    $num++;
+                }
+            }
+        
+            $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics'));
             foreach($recitopts as $data){
-                $DB->execute("insert into {format_recit_options} (courseid, sectionid, name, value)
-                values(?, ?, 'sectionlevel', ?)
-                ON DUPLICATE KEY UPDATE value = value", [$data->courseid, $data->sectionid, $data->value]);
+                if ($data->name == 'tttabsmodel'){
+                    $mapping = array(
+                        1 => 1,
+                        2 => 3,
+                        3 => 2,
+                        5 => 4,
+                    );
+                    $model = 5;
+                    if (isset($mapping[$data->value])){
+                        $model = $mapping[$data->value];
+                    }
+                    $this->setCustomFieldData($data->courseid, 'menumodel', $model);
+                }elseif ($data->name == 'ttshownavsection'){
+                    $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
+                }elseif ($data->name == 'ttcustompath'){
+                    $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
+                }/*elseif ($data->name == 'tthascontract'){
+                    unset($data->id);
+                    $data->format = 'recit';
+                    $DB->insert_record('course_format_options', $data);
+                }*/
                 $num++;
             }
-        }
-        
-        $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics'));
-        foreach($recitopts as $data){
-            if ($data->name == 'tttabsmodel'){
-                $mapping = array(
-                    1 => 1,
-                    2 => 3,
-                    3 => 2,
-                    5 => 4,
-                );
-                $model = 5;
-                if (isset($mapping[$data->value])){
-                    $model = $mapping[$data->value];
-                }
-                $this->setCustomFieldData($data->courseid, 'menumodel', $model);
-            }elseif ($data->name == 'ttshownavsection'){
-                $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
-            }elseif ($data->name == 'ttcustompath'){
-                $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
-            }elseif ($data->name == 'tthascontract'){
-                unset($data->id);
+
+            $num2 = 0;
+            $courses = $DB->get_records('course', array('format'=>'treetopics'));
+            foreach ($courses as $course){
+                $c = $course->id;
+                $num2++;
+                $data = new stdClass();
+                $data->id = $c;
                 $data->format = 'recit';
-                $DB->insert_record('course_format_options', $data);
-            }
-            $num++;
-        }
+                $DB->update_record('course', $data);
+                // make sure the modinfo cache is reset
+                rebuild_course_cache($c);
+                $course = $DB->get_record('course', array('id'=>$c));
+                // Trigger a course updated event.
+                $event = \core\event\course_updated::create(array(
+                    'objectid' => $course->id,
+                    'context' => context_course::instance($course->id),
+                    'other' => array('shortname' => $course->shortname,
+                                    'fullname' => $course->fullname,
+                                    'updatedfields' => [])
+                ));
+            
+                $event->set_legacy_logdata(array($course->id, 'course', 'update', 'edit.php?id=' . $course->id, $course->id));
+                $event->trigger();
 
-        $num2 = 0;
-        $courses = $DB->get_records('course', array('format'=>'treetopics'));
-        foreach ($courses as $course){
-            $c = $course->id;
-            $num2++;
-            $data = new stdClass();
-            $data->id = $c;
-            $data->format = 'recit';
-            $DB->update_record('course', $data);
-            // make sure the modinfo cache is reset
-            rebuild_course_cache($c);
-            $course = $DB->get_record('course', array('id'=>$c));
-            // Trigger a course updated event.
-            $event = \core\event\course_updated::create(array(
-                'objectid' => $course->id,
-                'context' => context_course::instance($course->id),
-                'other' => array('shortname' => $course->shortname,
-                                 'fullname' => $course->fullname,
-                                 'updatedfields' => [])
-            ));
-        
-            $event->set_legacy_logdata(array($course->id, 'course', 'update', 'edit.php?id=' . $course->id, $course->id));
-            $event->trigger();
-
-            //Migrate contract signatures
-            $signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
-            foreach($signatures as $s){
-                unset($s->id);
-                $DB->insert_record('format_recit_contract', $s);
+                //Migrate contract signatures
+                $signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
+                foreach($signatures as $s){
+                    unset($s->id);
+                    $DB->insert_record('format_recit_contract', $s);
+                }
             }
+
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">$num2 cours avec Format RÉCIT ont été migrés vers Format RÉCIT v2</div>";
         }
-        }catch(Exception $ex){
+        catch(Exception $ex){
             $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
         }
-
-        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
-        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num2 cours avec Format RÉCIT ont été migrés vers Format RÉCIT v2</div>";
 
         return $result;
     }
@@ -119,7 +120,7 @@ class RecitMigrator {
                 \recitcahiertraces\PersistCtrl::getInstance($DB, $USER)->importCahierCanada($newcm->id, $data);
                 set_coursemodule_visible($cc->mid, 0);
                 $num++;
-                $result .= "<div class=\"alert alert-warning alert-block fade in \">".$oldcm->name." a été migré du cours ".$course->shortname. "</div>";
+                $result .= "<div class=\"alert alert-warning alert-block fade in \">Le cahier de traces v1 \"".$oldcm->name."\" a été migré du cours ".$course->shortname. ".</div>";
             }
             catch(Exception $ex){
                 $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
@@ -127,7 +128,7 @@ class RecitMigrator {
         }
 
         if ($num == 0){
-            $result .= "<div class=\"alert alert-danger alert-block fade in \">Aucune donnée à migrer</div>";
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">Aucune donnée à migrer.</div>";
         }
 
         return $result;
