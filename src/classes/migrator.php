@@ -69,7 +69,14 @@ class RecitMigrator {
             ));
         
             $event->set_legacy_logdata(array($course->id, 'course', 'update', 'edit.php?id=' . $course->id, $course->id));
-            $event->trigger();        
+            $event->trigger();
+
+            //Migrate contract signatures
+            $signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
+            foreach($signatures as $s){
+                unset($s->id);
+                $DB->insert_record('format_recit_contract', $s);
+            }
         }
         }catch(Exception $ex){
             $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
