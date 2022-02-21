@@ -82,8 +82,8 @@ class RecitMigrator {
             $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
         }
 
-        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données de Treetopics ont été migré vers v2</div>";
-        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num2 cours de Treetopics ont été migré vers v2</div>";
+        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
+        $result .= "<div class=\"alert alert-warning alert-block fade in \">$num2 cours avec Format RÉCIT ont été migrés vers Format RÉCIT v2</div>";
 
         return $result;
     }
@@ -119,7 +119,7 @@ class RecitMigrator {
                 \recitcahiertraces\PersistCtrl::getInstance($DB, $USER)->importCahierCanada($newcm->id, $data);
                 set_coursemodule_visible($cc->mid, 0);
                 $num++;
-                $result .= "<div class=\"alert alert-warning alert-block fade in \">Migrated ".$oldcm->name." from course ".$course->shortname. "</div>";
+                $result .= "<div class=\"alert alert-warning alert-block fade in \">".$oldcm->name." a été migré du cours ".$course->shortname. "</div>";
             }
             catch(Exception $ex){
                 $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";

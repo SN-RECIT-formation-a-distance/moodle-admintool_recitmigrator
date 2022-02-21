@@ -44,10 +44,10 @@ if (isset($_GET['action'])){
     }
 }
 
-echo "<h3>Migration Tree Topics pour Format RÉCIT</h3>";
+echo "<h3>Migration Format RÉCIT vers Format RÉCIT v2</h3>";
 echo "<div class=\"text-muted \">
-La migration du format va migré les données Treetopics (modèle menu, niveau de menu, affichage par section, cacher section restreint) vers format RÉCIT et changera aussi le format de cours.
-Le format RÉCIT est dépendant du theme RÉCIT v2.
+<p>Cette migration transforme le Format de cours RÉCIT (modèle de menu, niveau de section, afficher la navigation par section, activer le cheminement personnalisé par groupe) vers le Format de cours RÉCIT v2 et migre aussi les options du format de cours.</p>
+<p>Le format RÉCIT est dépendant du thème RÉCIT v2.</p>
 </div>";
 echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
 if(!empty($resultFormat)){
@@ -55,9 +55,9 @@ if(!empty($resultFormat)){
     echo $resultFormat;
 }
 
-echo "<h3>Migration Cahier de traces v1 au Cahier de traces v2</h3>";
+echo "<h3>Migration Cahier de traces v1 vers Cahier de traces v2</h3>";
 echo "<div class=\"text-muted \">
-La migration du cahier de trace va migré le cahier ainsi que les données vers une nouvelle activité et va cacher l'ancienne activité.
+Cette migration cache l'activité Cahier de trace v1 et génère une nouvelle activité Cahier de trace v2.
 </div>";
 echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
 if(!empty($resultCC)){
