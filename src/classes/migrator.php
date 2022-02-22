@@ -6,6 +6,7 @@ require_once($CFG->dirroot . "/mod/recitcahiertraces/classes/PersistCtrl.php");
 class RecitMigrator {
 
     public function migrateFormat(){
+        ini_set('max_execution_time', 60*60);
         global $DB;
         $result = "";
         
@@ -99,6 +100,7 @@ class RecitMigrator {
     
     public function migrateCC(){
         global $DB, $USER;
+        ini_set('max_execution_time', 60*60);
         
         $recitcc = $DB->get_records_sql("SELECT t1.id as id, t2.id as mid, t2.course as course, t2.section as section FROM {course_modules} t2
         INNER JOIN {recitcahiercanada} t1 ON t1.id = t2.instance
@@ -128,6 +130,34 @@ class RecitMigrator {
 
         if ($num == 0){
             $result .= "<div class=\"alert alert-danger alert-block fade in \">Aucune donnée à migrer</div>";
+        }
+
+        return $result;
+    }
+
+    public function migrateTheme(){
+        global $DB, $USER;
+        ini_set('max_execution_time', 60*60);
+        
+
+        $result = "";
+        $num = 0;
+        $courses = $DB->get_records('course', array('theme'=>'recit'));
+        foreach ($courses as $course){
+            try{
+                $DB->update_record('course', array('id' => $course->id, 'theme' => 'recit2'));
+                $num++;
+                $result .= "<div class=\"alert alert-warning alert-block fade in \"> Le cours ".$course->shortname. " a été migré vers le theme RÉCIT v2</div>";
+            }
+            catch(Exception $ex){
+                $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
+            }
+        }
+
+        if ($num == 0){
+            $result .= "<div class=\"alert alert-danger alert-block fade in \">Aucune donnée à migrer</div>";
+        }else{
+            purge_caches();
         }
 
         return $result;

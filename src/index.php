@@ -42,6 +42,9 @@ if (isset($_GET['action'])){
     if ($_GET['action'] == 'cc'){
         $resultCC = $migr->migrateCC();
     }
+    if ($_GET['action'] == 'theme'){
+        $resultTheme = $migr->migrateTheme();
+    }
 }
 
 echo "<h3>Migration Format RÉCIT vers Format RÉCIT v2</h3>";
@@ -63,6 +66,16 @@ echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' 
 if(!empty($resultCC)){
     echo "<h4>Résultat</h4>";
     echo $resultCC;
+}
+
+echo "<h3>Migration theme RÉCIT v1 vers RÉCIT v2</h3>";
+echo "<div class=\"text-muted \">
+Cette migration va migré tout les cours ayant forcé le theme RÉCIT v1 vers v2
+</div>";
+echo "<form><input type='hidden' name='action' value='theme'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
+if(!empty($resultTheme)){
+    echo "<h4>Résultat</h4>";
+    echo $resultTheme;
 }
 
 
