@@ -68,9 +68,10 @@ if(!empty($resultCC)){
     echo $resultCC;
 }
 
-echo "<h3>Migration theme RÉCIT v1 vers RÉCIT v2</h3>";
+echo "<h3>Migration thème RÉCIT v1 vers RÉCIT legacy</h3>";
 echo "<div class=\"text-muted \">
-Cette migration va migré tout les cours ayant forcé le theme RÉCIT v1 vers v2
+<p>Cette migration va migrer tout les cours ayant forcé le thème RÉCIT v1 vers RÉCIT legacy.</p>
+<p>Le thème RÉCIT legacy contient toutes les améliorations du thème RÉCIT v2 et assure la compatibilité des contenus créés avec le thème RÉCIT v1.</p>
 </div>";
 echo "<form><input type='hidden' name='action' value='theme'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
 if(!empty($resultTheme)){

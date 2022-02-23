@@ -146,9 +146,9 @@ class RecitMigrator {
         $courses = $DB->get_records('course', array('theme'=>'recit'));
         foreach ($courses as $course){
             try{
-                $DB->update_record('course', array('id' => $course->id, 'theme' => 'recit2'));
+                $DB->update_record('course', array('id' => $course->id, 'theme' => 'recitlegacy'));
                 $num++;
-                $result .= "<div class=\"alert alert-warning alert-block fade in \"> Le cours ".$course->shortname. " a été migré vers le theme RÉCIT v2</div>";
+                $result .= "<div class=\"alert alert-warning alert-block fade in \"> Le cours ".$course->shortname. " a été migré vers le theme RÉCIT legacy</div>";
             }
             catch(Exception $ex){
                 $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
@@ -156,7 +156,7 @@ class RecitMigrator {
         }
 
         if ($num == 0){
-            $result .= "<div class=\"alert alert-danger alert-block fade in \">Aucune donnée à migrer</div>";
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">Aucune donnée à migrer.</div>";
         }else{
             purge_caches();
         }
