@@ -6,11 +6,16 @@ require_once($CFG->dirroot . "/mod/recitcahiertraces/classes/PersistCtrl.php");
 class RecitMigrator {
 
     public function migrateFormat(){
+        global $CFG, $DB;
         ini_set('max_execution_time', 60*60);
-        global $DB;
-        $result = "";
-        
+
         try {
+            $result = "";
+
+            if(!file_exists("{$CFG->dirroot}/course/format/recit")){
+                throw new Exception("La migration n'est pas requise, car le plug-in <b>format_recit</b> n'est pas présent.");
+            }
+        
             $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics', 'name' => 'ttsectiondisplay'));
             $num = 0;
             if (!empty($recitopts)){
@@ -27,8 +32,8 @@ class RecitMigrator {
                 if ($data->name == 'tttabsmodel'){
                     $mapping = array(
                         1 => 1,
-                        2 => 3,
-                        3 => 2,
+                        2 => 2,
+                        3 => 3,
                         5 => 4,
                     );
                     $model = 5;
@@ -73,11 +78,11 @@ class RecitMigrator {
                 $event->trigger();
 
                 //Migrate contract signatures
-                $signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
+                /*$signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
                 foreach($signatures as $s){
                     unset($s->id);
                     $DB->insert_record('format_recit_contract', $s);
-                }
+                }*/
             }
 
             $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
@@ -100,9 +105,13 @@ class RecitMigrator {
     }
     
     public function migrateCC(){
-        global $DB, $USER;
+        global $DB, $USER, $CFG;
         ini_set('max_execution_time', 60*60);
         
+        if(!file_exists("{$CFG->dirroot}/mod/recitcahiertraces")){
+            return "<div class=\"alert alert-danger alert-block fade in \">La migration n'est pas requise, car le plug-in <b>mod_recitcahiertraces</b> n'est pas présent.</div>";
+        }
+
         $recitcc = $DB->get_records_sql("SELECT t1.id as id, t2.id as mid, t2.course as course, t2.section as section FROM {course_modules} t2
         INNER JOIN {recitcahiercanada} t1 ON t1.id = t2.instance
         WHERE t2.visible = 1 AND t2.module = (SELECT id FROM {modules} WHERE name='recitcahiercanada');");
@@ -137,9 +146,12 @@ class RecitMigrator {
     }
 
     public function migrateTheme(){
-        global $DB, $USER;
+        global $DB, $CFG;
         ini_set('max_execution_time', 60*60);
         
+        if(!file_exists("{$CFG->dirroot}/theme/recit2")){
+            return "<div class=\"alert alert-danger alert-block fade in \">La migration n'est pas requise, car le plug-in <b>theme_recit2</b> n'est pas présent.</div>";
+        }
 
         $result = "";
         $num = 0;
