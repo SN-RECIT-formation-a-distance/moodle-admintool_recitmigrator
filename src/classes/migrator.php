@@ -40,11 +40,16 @@ class RecitMigrator {
                     $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
                 }elseif ($data->name == 'ttcustompath'){
                     $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
-                }/*elseif ($data->name == 'tthascontract'){
+                /*}elseif ($data->name == 'tthascontract'){
                     unset($data->id);
                     $data->format = 'recit';
                     $DB->insert_record('course_format_options', $data);
                 }*/
+                }elseif ($data->name == 'ttsectiondisplay' || $data->name == 'ttsectionshowactivities' || $data->name == 'ttsectiontitle'){
+                    unset($data->id);
+                    $data->format = 'recit';
+                    $DB->insert_record('course_format_options', $data);
+                }
                 $num++;
             }
 
@@ -73,11 +78,11 @@ class RecitMigrator {
                 $event->trigger();
 
                 //Migrate contract signatures
-                $signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
+                /*$signatures = $DB->get_records('format_treetopics_contract', array('courseid'=>$course->id));
                 foreach($signatures as $s){
                     unset($s->id);
                     $DB->insert_record('format_recit_contract', $s);
-                }
+                }*/
             }
 
             $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
