@@ -47,37 +47,43 @@ if (isset($_GET['action'])){
     }
 }
 
-echo "<h3>Migration Format RÉCIT vers Format RÉCIT v2</h3>";
+echo "<hr>";
+echo "<h3>Migration thème RÉCIT v1 vers RÉCIT legacy</h3>";
 echo "<div class=\"text-muted \">
-<p>Cette migration transforme le Format de cours RÉCIT (modèle de menu, niveau de section, afficher la navigation par section, activer le cheminement personnalisé par groupe) vers le Format de cours RÉCIT v2 et migre aussi les options du format de cours.</p>
-<p>Le format RÉCIT est dépendant du thème RÉCIT v2.</p>
+<p>Cette migration va migrer tout les cours ayant forcé le thème RÉCIT v1 vers RÉCIT legacy.</p>
+<p>Le thème RÉCIT legacy contient toutes les améliorations du thème RÉCIT v2 et assure la compatibilité des contenus créés avec le thème RÉCIT v1.</p>
 </div>";
-echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
-if(!empty($resultFormat)){
-    echo "<h4>Résultat</h4>";
-    echo $resultFormat;
-}
-
-echo "<h3>Migration Cahier de traces v1 vers Cahier de traces v2</h3>";
-echo "<div class=\"text-muted \">
-Cette migration cache l'activité Cahier de trace v1 et génère une nouvelle activité Cahier de trace v2.
-</div>";
-echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
-if(!empty($resultCC)){
-    echo "<h4>Résultat</h4>";
-    echo $resultCC;
-}
-
-echo "<h3>Migration theme RÉCIT v1 vers RÉCIT v2</h3>";
-echo "<div class=\"text-muted \">
-Cette migration va migré tout les cours ayant forcé le theme RÉCIT v1 vers v2
-</div>";
-echo "<form><input type='hidden' name='action' value='theme'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form><hr>";
+echo "<form><input type='hidden' name='action' value='theme'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
 if(!empty($resultTheme)){
     echo "<h4>Résultat</h4>";
     echo $resultTheme;
 }
 
+echo "<hr>";
+echo "<h3>Migration Format RÉCIT vers Format RÉCIT v2</h3>";
+echo "<div class=\"text-muted \">
+<p>Cette migration transforme le Format de cours RÉCIT (modèle de menu, niveau de section, afficher la navigation par section, activer le cheminement personnalisé par groupe) vers le Format de cours RÉCIT v2 et migre aussi les options du format de cours.</p>
+<p>Le format RÉCIT est dépendant du thème RÉCIT v2.</p>
+</div>";
+echo "<form><input type='hidden' name='action' value='format'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
+if(!empty($resultFormat)){
+    echo "<h4>Résultat</h4>";
+    echo $resultFormat;
+}
+
+echo "<hr>";
+echo "<h3>Migration Cahier de traces v1 vers Cahier de traces v2</h3>";
+echo "<div class=\"text-muted \">
+<p>Cette migration cache l'activité Cahier de trace v1 et génère une nouvelle activité Cahier de trace v2.</p>
+<p>Veuillez patienter, car le temps de traitement de la requête dépend de la quantité de données utilisateur.</p>
+</div>
+<div class=\"alert alert-danger alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur https://MON-SERVEUR/admin/filters.php</div>";
+
+echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
+if(!empty($resultCC)){
+    echo "<h4>Résultat</h4>";
+    echo $resultCC;
+}
 
 echo $OUTPUT->box_end();
 echo $OUTPUT->footer();
