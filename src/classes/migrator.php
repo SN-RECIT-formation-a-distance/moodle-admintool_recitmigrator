@@ -53,7 +53,13 @@ class RecitMigrator {
                 }elseif ($data->name == 'ttsectiondisplay' || $data->name == 'ttsectionshowactivities' || $data->name == 'ttsectiontitle'){
                     unset($data->id);
                     $data->format = 'recit';
-                    $DB->insert_record('course_format_options', $data);
+                    try{
+                        $DB->insert_record('course_format_options', $data);
+                    }
+                    catch(Exception $ex){
+                        // Si erreur d'écriture vers la base de données à cause d'une entrée dupliqué, donc on a pas besoin d'afficher l'erreur
+                        //$result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
+                    }
                 }
                 $num++;
             }

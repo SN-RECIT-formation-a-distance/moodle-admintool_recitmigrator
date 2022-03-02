@@ -77,7 +77,7 @@ echo "<div class=\"text-muted \">
 <p>Cette migration cache l'activité Cahier de trace v1 et génère une nouvelle activité Cahier de trace v2.</p>
 <p>Veuillez patienter, car le temps de traitement de la requête dépend de la quantité de données utilisateur.</p>
 </div>
-<div class=\"alert alert-danger alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur https://MON-SERVEUR/admin/filters.php</div>";
+<div class=\"alert alert-primary alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur https://MON-SERVEUR/admin/filters.php</div>";
 
 echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
 if(!empty($resultCC)){
