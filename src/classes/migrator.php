@@ -40,11 +40,15 @@ class RecitMigrator {
                     if (isset($mapping[$data->value])){
                         $model = $mapping[$data->value];
                     }
+
+                    // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
                     $this->setCustomFieldData($data->courseid, 'menumodel', $model);
                 }elseif ($data->name == 'ttshownavsection'){
+                    // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
                     $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
                 }elseif ($data->name == 'ttcustompath'){
-                    $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
+                    // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
+                    $this->setCustomFieldData($data->courseid, 'hide_restricted_section', intval($data->value));
                 /*}elseif ($data->name == 'tthascontract'){
                     unset($data->id);
                     $data->format = 'recit';
@@ -96,11 +100,11 @@ class RecitMigrator {
                 }*/
             }
 
-            $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été migrées vers Format RÉCIT v2.</div>";
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">$num données ont été traitées.</div>";
             $result .= "<div class=\"alert alert-warning alert-block fade in \">$num2 cours avec Format RÉCIT ont été migrés vers Format RÉCIT v2</div>";
         }
         catch(Exception $ex){
-            $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
+            $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage() . "<br/>" . print_r($data, true) . "</div>";
         }
 
         return $result;

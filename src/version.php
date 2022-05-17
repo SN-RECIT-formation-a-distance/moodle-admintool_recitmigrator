@@ -28,6 +28,6 @@ $plugin->version   = 2022020900; // The current plugin version (Date: YYYYMMDDXX
 $plugin->requires  = 2020061500.00; // Moodle 3.9.0
 $plugin->component = 'tool_recitmigrator'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.0.1';
+$plugin->release = 'v1.0.2';
 $plugin->dependencies = [];
 
