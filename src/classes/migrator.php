@@ -20,6 +20,8 @@ class RecitMigrator {
             $num = 0;
             if (!empty($recitopts)){
                 foreach($recitopts as $data){
+                    $newrecitopts = $DB->get_records('format_recit_options', array('courseid' => $data->courseid));
+                    if (!empty($newrecitopts)) continue;
                     $DB->execute("insert into {format_recit_options} (courseid, sectionid, name, value)
                     values(?, ?, 'sectionlevel', ?)
                     ON DUPLICATE KEY UPDATE value = value", [$data->courseid, $data->sectionid, $data->value]);
@@ -29,7 +31,14 @@ class RecitMigrator {
         
             $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics'));
             foreach($recitopts as $data){
+                $newrecitopts = $DB->get_records('course_format_options', array('courseid' => $data->courseid, 'format' => 'recit'));
+                if (!empty($newrecitopts)) continue;
+                $migrated = true;
                 if ($data->name == 'tttabsmodel'){
+                    if ($this->doesCustomFieldExist('menumodel')){
+                        continue;
+                    }
+
                     $mapping = array(
                         1 => 1,
                         2 => 2,
@@ -42,8 +51,14 @@ class RecitMigrator {
                     }
                     $this->setCustomFieldData($data->courseid, 'menumodel', $model);
                 }elseif ($data->name == 'ttshownavsection'){
+                    if ($this->doesCustomFieldExist('show_section_bottom_nav')){
+                        continue;
+                    }
                     $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
                 }elseif ($data->name == 'ttcustompath'){
+                    if ($this->doesCustomFieldExist('hide_restricted_section')){
+                        continue;
+                    }
                     $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
                 /*}elseif ($data->name == 'tthascontract'){
                     unset($data->id);
@@ -60,8 +75,10 @@ class RecitMigrator {
                         // Si erreur d'écriture vers la base de données à cause d'une entrée dupliqué, donc on a pas besoin d'afficher l'erreur
                         //$result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
                     }
+                }else{
+                    $migrated = false;
                 }
-                $num++;
+                if ($migrated) $num++;
             }
 
             $num2 = 0;
@@ -113,6 +130,41 @@ class RecitMigrator {
         $data->id = $courseid;
         $data->$k = $val;
         $handler->instance_form_save($data);
+    }
+
+    public function doesCustomFieldExist($name) {
+        global $COURSE;
+
+        if($COURSE->id > 1){
+            $customFieldsRecit = theme_recit2_get_course_metadata($COURSE->id, 'Personnalisation du thème RÉCIT');
+
+            if(property_exists($customFieldsRecit, $name)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function theme_recit2_get_course_metadata($courseid, $cat) {
+        $handler = \core_customfield\handler::get_handler('core_course', 'course');
+        // This is equivalent to the line above.
+        //$handler = \core_course\customfield\course_handler::create();
+        $datas = $handler->get_instance_data($courseid, true);
+        
+        $result = new stdClass();    
+        foreach ($datas as $data) {
+            if (empty($data->get_value())) {
+                continue;
+            }
+            if($data->get_field()->get_category()->get('name') != $cat){
+                continue;
+            }
+    
+            $attr = $data->get_field()->get('shortname');
+            $result->$attr = $data->get_value();
+        }
+        return $result;
     }
     
     public function migrateCC(){
