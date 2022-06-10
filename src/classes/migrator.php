@@ -56,15 +56,14 @@ class RecitMigrator {
                     if ($this->doesCustomFieldExist('show_section_bottom_nav')){
                         continue;
                     }
+
+                    // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
                     $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
                 }elseif ($data->name == 'ttcustompath'){
                     if ($this->doesCustomFieldExist('hide_restricted_section')){
                         continue;
                     }
-                    $this->setCustomFieldData($data->courseid, 'hide_restricted_section', $data->value);
-                    // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
-                    $this->setCustomFieldData($data->courseid, 'show_section_bottom_nav', $data->value);
-                }elseif ($data->name == 'ttcustompath'){
+
                     // ceci doit être migré vers le champ custom du cours (selon le thème recit v2)
                     $this->setCustomFieldData($data->courseid, 'hide_restricted_section', intval($data->value));
                 /*}elseif ($data->name == 'tthascontract'){
