@@ -20,15 +20,21 @@ class RecitMigrator {
             $num = 0;
             if (!empty($recitopts)){
                 foreach($recitopts as $data){
-                    $newrecitopts = $DB->get_records('format_recit_options', array('courseid' => $data->courseid));
-                    if (!empty($newrecitopts)) continue;
+                    $newrecitopts = $DB->get_records_sql('select id from {format_recit_options} where 
+                        courseid = :courseid and sectionid = :sectionid and value = :value and name  = ' . $DB->sql_compare_text(':name'), 
+                        array('courseid' => $data->courseid, 'sectionid' => $data->sectionid, 'name' => 'sectionlevel', 'value' => $data->value ));
+                    
+                    if (!empty($newrecitopts)){
+                        continue;
+                    }
+                    
                     $DB->execute("insert into {format_recit_options} (courseid, sectionid, name, value)
                     values(?, ?, 'sectionlevel', ?)
                     ON DUPLICATE KEY UPDATE value = value", [$data->courseid, $data->sectionid, $data->value]);
                     $num++;
                 }
             }
-        
+
             $recitopts = $DB->get_records('course_format_options', array('format' => 'treetopics'));
             foreach($recitopts as $data){
                 $newrecitopts = $DB->get_records('course_format_options', array('courseid' => $data->courseid, 'format' => 'recit'));
