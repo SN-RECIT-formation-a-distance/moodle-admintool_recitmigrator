@@ -24,10 +24,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2022061400; // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2022100100; // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires  = 2020061500.00; // Moodle 3.9.0
 $plugin->component = 'tool_recitmigrator'; // Full name of the plugin (used for diagnostics)
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.0.4';
-$plugin->dependencies = [];
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = 'v1.0.5-stable';
+$plugin->supported = [39, 311];      //  Moodle 3.9.x, 3.10.x and 3.11.x are supported.
+$plugin->dependencies = [
+	'theme_recit' => 2022020900,
+	'theme_recit2' => 2022020902,
+	'theme_recitlegacy' => 2022020901,
+	'format_treetopics' => 2022020900,
+	'format_recit' => 2022021502,
+	'mod_recitcahiercanada' => 2022020900,
+	'mod_recitcahiertraces' => 2022020901	
+];
 
