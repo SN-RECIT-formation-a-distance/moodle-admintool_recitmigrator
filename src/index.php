@@ -45,6 +45,9 @@ if (isset($_GET['action'])){
     if ($_GET['action'] == 'theme'){
         $resultTheme = $migr->migrateTheme();
     }
+    if ($_GET['action'] == 'editor'){
+        $resultEditor = $migr->migrateEditor();
+    }
 }
 
 echo "<hr>";
@@ -77,12 +80,32 @@ echo "<div class=\"text-muted \">
 <p>Cette migration cache l'activité Cahier de trace v1 et génère une nouvelle activité Cahier de trace v2.</p>
 <p>Veuillez patienter, car le temps de traitement de la requête dépend de la quantité de données utilisateur.</p>
 </div>
-<div class=\"alert alert-primary alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur https://MON-SERVEUR/admin/filters.php</div>";
-
-echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
+<div class=\"alert alert-primary alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur ".$CFG->wwwroot."/admin/filters.php</div>";
+$disabled = "disabled";
+if(file_exists("{$CFG->dirroot}/mod/recitcahiercanada/")){
+    $version = get_config('mod_recitcahiercanada')->version;
+    if ($version > 2022020900) $disabled = "";
+}
+echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' ".$disabled." class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
+if (!empty($disabled)){
+    echo "<div class=\"alert alert-primary alert-block fade in \">Cette opération requiert le plugin mod_recitcahiercanada v1.15.0</div>";
+}
 if(!empty($resultCC)){
     echo "<h4>Résultat</h4>";
     echo $resultCC;
+}
+
+echo "<hr>";
+echo "<h3>Migration des gabarits vvvebjs vers html bootstrap editor</h3>";
+echo "<div class=\"text-muted \">
+<p>L'opération crée de nouveaux gabarits pour tous les utilisateurs. Lors de l'opération, le gabarit généré par l'utilisateur à l'aide de VVVEB est migré vers l'éditeur HTML Bootstrap. Ne pas dupliquer la requête (clic) car celle-ci crée une copie des gabarits HTML Bootstrap à chaque fois que la commande est lancée. </p>
+<p>Veuillez patienter, car le temps de traitement de la requête dépend de la quantité de données utilisateur.</p>
+</div>";
+
+echo "<form><input type='hidden' name='action' value='editor'/><input type='submit' class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
+if(!empty($resultEditor)){
+    echo "<h4>Résultat</h4>";
+    echo $resultEditor;
 }
 
 echo $OUTPUT->box_end();

@@ -1,7 +1,5 @@
 <?php 
 require_once($CFG->dirroot . '/course/modlib.php');
-require_once($CFG->dirroot . "/mod/recitcahiercanada/classes/PersistCtrl.php");
-require_once($CFG->dirroot . "/mod/recitcahiertraces/classes/PersistCtrl.php");
 
 class RecitMigrator {
 
@@ -183,9 +181,14 @@ class RecitMigrator {
         global $DB, $USER, $CFG;
         ini_set('max_execution_time', 60*60);
         
+        if(!file_exists("{$CFG->dirroot}/mod/recitcahiercanada")){
+            return "<div class=\"alert alert-danger alert-block fade in \">La migration n'est pas requise, car le plug-in <b>mod_recitcahiercanada</b> n'est pas présent.</div>";
+        }
         if(!file_exists("{$CFG->dirroot}/mod/recitcahiertraces")){
             return "<div class=\"alert alert-danger alert-block fade in \">La migration n'est pas requise, car le plug-in <b>mod_recitcahiertraces</b> n'est pas présent.</div>";
         }
+        require_once($CFG->dirroot . "/mod/recitcahiercanada/classes/PersistCtrl.php");
+        require_once($CFG->dirroot . "/mod/recitcahiertraces/classes/PersistCtrl.php");
 
         $recitcc = $DB->get_records_sql("SELECT t1.id as id, t2.id as mid, t2.course as course, t2.section as section FROM {course_modules} t2
         INNER JOIN {recitcahiercanada} t1 ON t1.id = t2.instance
@@ -210,6 +213,35 @@ class RecitMigrator {
             }
             catch(Exception $ex){
                 $result .= "<div class=\"alert alert-danger alert-block fade in \">".$ex->GetMessage()."</div>";
+            }
+        }
+
+        if ($num == 0){
+            $result .= "<div class=\"alert alert-warning alert-block fade in \">Aucune donnée à migrer.</div>";
+        }
+
+        return $result;
+    }
+    
+    public function migrateEditor(){
+        global $DB, $USER, $CFG;
+        ini_set('max_execution_time', 60*60);
+        
+        if(!file_exists("{$CFG->dirroot}/lib/editor/atto/plugins/reciteditor")){
+            return "<div class=\"alert alert-danger alert-block fade in \">La migration n'est pas requise, car le plug-in <b>atto_htmlbootstrapeditor</b> n'est pas présent.</div>";
+        }
+
+
+        $result = "";
+        $num = 0;
+        $dbman = $DB->get_manager();
+        if ($dbman->table_exists('atto_vvvebjs')) {
+            $rst = $DB->get_records('atto_vvvebjs');
+    
+            foreach ($rst as $obj){
+                $DB->insert_record('atto_reciteditor_templates', array('name' => 'vvvebjs_'.$obj->name, 'userid' => $obj->user, 'htmlstr' => $obj->html, 'type' => 'l', 'img' => $obj->image));
+                $result .= "<div class=\"alert alert-warning alert-block fade in \">Le gabarit \"".$obj->name."\" a été migré.</div>";
+                $num++;
             }
         }
 

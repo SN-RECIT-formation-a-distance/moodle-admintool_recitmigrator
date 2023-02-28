@@ -31,12 +31,9 @@ $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'v1.0.5-stable';
 $plugin->supported = [39, 311];      //  Moodle 3.9.x, 3.10.x and 3.11.x are supported.
 $plugin->dependencies = [
-	'theme_recit' => 2022020900,
 	'theme_recit2' => 2022020902,
 	'theme_recitlegacy' => 2022020901,
-	'format_treetopics' => 2022020900,
 	'format_recit' => 2022021502,
-	'mod_recitcahiercanada' => 2022020900,
 	'mod_recitcahiertraces' => 2022020901	
 ];
 
