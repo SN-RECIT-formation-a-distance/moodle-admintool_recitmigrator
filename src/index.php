@@ -81,14 +81,24 @@ echo "<div class=\"text-muted \">
 <p>Veuillez patienter, car le temps de traitement de la requête dépend de la quantité de données utilisateur.</p>
 </div>
 <div class=\"alert alert-primary alert-block fade in \">Après la migration, il faut désactiver le filtre Cahier de traces et activer le filtre Cahier de traces v2 sur ".$CFG->wwwroot."/admin/filters.php</div>";
-$disabled = "disabled";
+$disabled = "";
 if(file_exists("{$CFG->dirroot}/mod/recitcahiercanada/")){
     $version = get_config('mod_recitcahiercanada')->version;
-    if ($version >= 2022020900) $disabled = "";
+    if ($version < 2022020900){
+        $disabled = "disabled";
+    } 
 }
+
+if(file_exists("{$CFG->dirroot}/mod/recitcahiertraces/")){
+    $version = get_config('mod_recitcahiertraces')->version;
+    if ($version != 2022100100){
+        $disabled = "disabled";
+    } 
+}
+
 echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' ".$disabled." class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
 if (!empty($disabled)){
-    echo "<div class=\"alert alert-primary alert-block fade in \">Cette opération requiert le plugin mod_recitcahiercanada v1.15.0</div>";
+    echo "<div class=\"alert alert-primary alert-block fade in \">Cette opération requiert le plugin mod_recitcahiercanada v1.15.0 et mod_recitcahiertraces v2.2.1-beta</div>";
 }
 if(!empty($resultCC)){
     echo "<h4>Résultat</h4>";
