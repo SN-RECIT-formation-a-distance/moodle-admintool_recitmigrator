@@ -84,7 +84,7 @@ echo "<div class=\"text-muted \">
 $disabled = "disabled";
 if(file_exists("{$CFG->dirroot}/mod/recitcahiercanada/")){
     $version = get_config('mod_recitcahiercanada')->version;
-    if ($version > 2022020900) $disabled = "";
+    if ($version >= 2022020900) $disabled = "";
 }
 echo "<form><input type='hidden' name='action' value='cc'/><input type='submit' ".$disabled." class='m-3 btn btn-primary' value='Démarrer la migration'/></form>";
 if (!empty($disabled)){
